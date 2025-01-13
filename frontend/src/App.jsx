@@ -6,6 +6,7 @@ import About from './pages/About';
 import NotFound from './pages/NotFound';
 import ContactList from './components/Contacts/ContactList';
 import LeadList from './components/Leads/LeadList';
+import AddContact from './components/Contacts/AddContact';
 
 const App = () => {
     return (
@@ -15,6 +16,7 @@ const App = () => {
                 <Route path="/" element={<Home />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/contacts" element={<ContactList />} />
+                <Route path="/add-contact" element={<AddContact />} />
                 <Route path="/leads" element={<LeadList />} />
                 <Route path="*" element={<NotFound />} />
             </Routes>

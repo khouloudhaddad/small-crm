@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Contact;
 use Illuminate\Http\Request;
 
 class ContactController extends Controller
@@ -12,7 +13,9 @@ class ContactController extends Controller
      */
     public function index()
     {
-        //
+        $contacts = Contact::all();
+
+        return response()->json($contacts, 200);
     }
 
     /**
@@ -28,7 +31,17 @@ class ContactController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // Validate request
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:contacts,email',
+            'phone' => 'required|string|max:15',
+        ]);
+
+        // Create a new contact
+        $contact = Contact::create($validated);
+
+        return response()->json($contact, 201);
     }
 
     /**
