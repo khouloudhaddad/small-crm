@@ -1,23 +1,39 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import AddContact from "./AddContact";
 
 const ContactList = () => {
   const [contacts, setContacts] = useState([]);
+  const [showModal, setShowModal] = useState(false);
 
+  const handleShow = () => setShowModal(true);
+  const handleClose = () => setShowModal(false);
+
+  const fetchContacts = async () => {
+    const response = await axios.get("http://localhost:8000/api/contacts"); // Adjust the API endpoint as needed
+    setContacts(response.data);
+  };
   useEffect(() => {
-    const fetchContacts = async () => {
-      const response = await axios.get("http://localhost:8000/api/contacts"); // Adjust the API endpoint as needed
-      setContacts(response.data);
-    };
     fetchContacts();
   }, []);
+
+  // Function to handle adding a new contact
+  const handleAddContact = async (newContact) => {
+    try {
+      await axios.post("http://localhost:8000/api/contacts", newContact);
+      fetchContacts(); // Refresh the contacts list after adding a new contact
+      handleClose(); // Close the modal
+    } catch (error) {
+      console.error("Error adding contact:", error);
+    }
+  };
 
   return (
     <div className="container py-5">
       <div className="row bg-light align-items-center p-2 mb-4">
         <h1 className="col-md-10">Contact List</h1>
-        <Link to="/add-contact" className="btn btn-primary col-md-2 d-flex align-items-center justify-content-center">
+        <button onClick={handleShow} 
+        className="btn btn-primary col-md-2 d-flex align-items-center justify-content-center">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -33,7 +49,7 @@ const ContactList = () => {
             />
           </svg> 
           <span className="ms-1">Contact</span>
-        </Link>
+        </button>
       </div>
       <div className="row">
         <div className="col-12">
@@ -50,6 +66,8 @@ const ContactList = () => {
           )}
         </div>
       </div>
+      {/* Add Contact Modal */}
+      <AddContact showModal={showModal} handleClose={handleClose} onAdd={handleAddContact} />
     </div>
   );
 };
